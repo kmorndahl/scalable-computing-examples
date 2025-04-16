@@ -1,0 +1,28 @@
+FAIR:
+- findable
+- accessible
+- interoperable
+- reusable
+how to prepare data so it can be used by others
+has to do with metadata and machine readability
+
+CARE:
+- collective benefit
+- authority to control
+- responsibility
+- ethics
+greater Indigenous control and oversight wrt data
+
+FAST (ethics in AI):
+- fairness
+    - data
+    - design
+    - outcome
+    - implementation
+- accountability
+    - AI are not moral decision makers, need humans
+- sustainability
+    - safe, accurate, reliable, secure, and robust AI systems
+- transparency
+    - avoid a ‘mathematical glass box’ where the code and mathematics behind the algorithm are openly available, but there is a lack of rationale about how or why the model goes from input to output
+

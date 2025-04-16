@@ -1,0 +1,92 @@
+http://learning.nceas.ucsb.edu/2025-04-arctic
+
+often playing 'whack-a-mole' with these limitations:
+- cpu-bound: Take too much cpu time
+- memory-bound: Take too much memory
+- I/O-bound: Take too much time to read/write from disk
+- network-bound: Take too much time to transfer
+
+hypervisor partitions physical server into virtual machines (computers)
+	- each have a guest operating systems
+	- different virtual machines can be set up differently, managed independently
+
+each host has an IP address (physical server or virtual machine)
+often mapped to host name shortcut to IP address
+
+can use this to set up clusters of resources, hosts
+
+different ports for different protocols for interacting between host/client and server
+
+./ to execute local command
+
+https://github.com/astral-sh/uv
+
+glances -- command to see status of remote server, good summary
+htop -- command to see status of cores and monitor processes
+iotop -- more advanced
+
+# of cores = number of parallel tasks 
+
+core is a unit within a processor
+thread is a unit of control within a process
+
+threads are mapped onto cores
+
+nodes within HPC
+each node can have multiple processors and within processors multiple cores
+
+parallel threads: separate threads assigned to separate cores (one operating system process, 5 threads)
+	- threads share operating system/memory block
+	- threads operate on the same data and block of memory
+	- if different threads operate on data on the same time, you can have problems
+parallel processes: separate processes (each can have one or more threads), assigned to separate cores
+	- creating copies of memory for each processes
+	- each processes has it's own copy of the data
+	- this takes time to create
+	- but don't have to worry about threads sharing resources/data
+	- overhead costs
+	- but reduces conflicts
+cluster
+	- need parallel processes because processes can be assigned to different cores across different nodes
+	- can't do parallel threads for this because there is no way to share data across nodes
+	- but can do both -- parallel threads within nodes, parallel processing across nodes
+	- even more overhead associated with creating parallel jobs
+
+e.g. simple code to increment a number
+	- if using parallel threads, hard to keep track of where the number is, many threads incrementing it at once/in random order
+	- can create a "thread safe" algorithm with safeguards against conflicts (e.g. locking data while a thread is using it)
+
+general principle: make sure overhead cost to set up parallelization is worth it wrt to saving compute time overall
+
+asynchronous function call
+	- rather than returning the result of a computation it saves a 'future'
+	- then you can check if/when the future(s) are done and retrieve the results and do something with them
+
+
+actual execution:
+sequential - things run one after the other (one has to finish before the other begins)
+parallel - things run at the same time
+
+scheduling of tasks:
+synchronous - run/schedule a thing, thing executes, then you can run another thing
+asynchronous - run/schedule a thing, the thing is scheduled and sent off to the worker, you can continue to run other things while the previous tasks are executing
+asynchronous - threads are created and executed asynchronously
+asynchronous - the user schedules a series of tasks to be executed asynchronously, and keeps track of the futures for each task
+
+If you are trying to parallelize something and you aren't seeing improvement...
+Make sure the code you are running actually supports forking/multi-threads
+e.g. pure python blocks multi-threads via gil
+So need to use packages that use C (e.g. numpy) to get around this
+
+what can cause you to wait:
+- process dependency
+    - function a depends on function b
+    - you can nest the functions to denote this dependency
+- data dependency:
+    - one processes creates a side effect (downloaded file)
+    - second process cant run unti that file is present
+    - no native way to indicate this dependency in python...
+    - but you can do this in parsl
+    - in parsl you can explicitly state both process and data dependencies
+    - parsl will build an execution map to maximize parallelization
+

@@ -1,0 +1,101 @@
+Am I dealing with geospatial rasters or generalized n-dimensional arrays?
+- raster is a 2 dimensional (lat/lon) array (but can have multiple bands)
+- raster very intentional about lat/lon geospatial aspect i.e. will have a CRS
+
+What is the (existing) file format?
+- Have to work with the constraints of the existing file format
+
+Is the data local or remote?
+- local = on disk e.g. on your laptop
+    - super fast access
+- remote = comes over the networy
+    - much slower
+
+If remote, where? And can I practically retrieve and store it locally?
+- Lots of networking details that influence how fast the data will move
+    - But hard to figure out...
+
+Either way, can I fit it in memory when working on it?
+
+If not, is the data set up to allow efficient access to subsets?
+
+Is the subsetting scheme well-suited to my expeced access patterns?
+
+Assuming I can get (subsets of) the data, can I efficiently distribute the processing of these subsets across workers?
+
+"Cloud-optimized data"
+- In multiple domains of interest (e.g. remotely sensed data), data is now at the cloud scale
+    - i.e. it no longer fits in local storage
+- Solution? Put it in massive, "infinitely" scalable cloud
+    - Also motivates us (for better or worse) to use cloud compute 
+    - Requires new learning to use cloud compute
+- But that means we have to read data over the internet
+- This involves using HTTP
+    - Each individual "read" operation is much slower (compared to local storage)
+    - Transfer throughput is much slower
+
+Cloud-optimized GeoTIFFs
+- TIFF: A generalized image file format
+    - Stores structured metadata and data form one or more "images" (rasters)
+    - Metadata can be anywhere in storage, not necessarily at the beginning
+    - No restrictions on layout of items in storage
+- GeoTIFF: A TIFF with extra metadata for representing geospatial data
+    - Special tags for locating the image on the Earth: Geospatial bounding box, CRS, datum, ellipsoid, projection
+    - Metadata can be anywhere, doesn't have to be at the beginning of the file
+    - No restrictions on layout
+- COG: A GeoTIFF designed for efficient access over the network
+    - All file metadata up front -- right at the start of the file
+    - Main raster(s) cut into tiles that are stored in chunks and optionally compressed
+        - Uses arbtrary tiling scheme by default
+        - But you could choose to use a standard grid instead
+    - Lower resolution "overview" tiles included in file, at various zoom levels (pyramids)
+    - Data is organized and data subsets are easy to identify and retrieve
+- Why COG:
+    - Clients can (often) get what they need by reading in a few small parts of the file
+
+"Cloud-optimized"
+- Consolidated metadata, metadata up front
+- Data in chunks
+    - Reasoable chunk size, not too big, not too small
+    - Reasoable compression (not enforced, but almost always compressed)
+    - Sensible chunk shape tuned for expected usage patterns
+- Suport for partial reads! (subsets of data) and parallel reads!
+- Designed to work with HTTP range requests for strategically accessing just a portion of the data
+
+Zarr
+- Metadata up front
+- A storage specification for chunked, compressed, N-dimensional arrays
+- Data (chunks) can be stored in various ways
+    - In memory
+    - As local files
+    - In cloud-based object storage
+- New this year on Zarr
+    - Chunks can be sharded
+    - Chunk = independently addressable, compressible, retrievable batch of data
+    - Shard = a collection of chunks stored together in one file/object
+    - Now can create tons of very small chunks without having tons of files
+        - Several chunks can be stored in the same shard (file)
+        - But, you can still access individual chunks from a shard
+    - Why? Solve the Goldilocks problem separately for chunk size and file size
+        - Can have small chunks but still few files
+    - Also reduces HTTP reads
+        - e.g. can do one read of one file and get multiple chunks
+
+Kerchunk (also VirtualiZarr)
+- Makes netCDF files cloud-friendly
+
+STAC
+
+Entire Landsat, Sentinel and NAIP records hosted on AWS (https://stacindex.org/catalogs/earth-search#/)
+And can be accessed using STAC...
+
+Tension between chunked files vs many files:
+Keep data in one file, but make it so that clients can efficiently extract subsets of interest
+OR
+Separate data into many independent files, with metadata binding them together
+
+We seem to be converging on a hybrid model:
+Zarr for general multi-dimensional data (chunking and sharding)
+COG + STAC for geospatial raster data
+
+rechunker (https://rechunker.readthedocs.io/en/latest/)

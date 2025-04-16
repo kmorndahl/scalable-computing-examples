@@ -1,0 +1,34 @@
+gridded data:
+- tabular data
+- array-like data (can be multi-dimensional)
+
+netCDF coordinate variables
+- separate variable for each dimension of the data stack
+- e.g. for a 100 x 100 x 10 data cube
+- you would have a 1d latitude variable of 100 values
+- you would have a 1d longitude variable of 100 values
+- you would have a 1d time variable of 10 values
+
+datetimes:
+- always use UTC time in datasets
+- use ISO 8601 if using strings to repesent datetimes
+    - not the most efficient
+    - but very robust and future proof
+- for numbers use standard time since epoch (unix/posix time)
+    - seconds since 1970
+    - 2038 will run out of numbers
+
+common/standard attributes:
+- variable attributes
+    - standard variable name
+    - units
+- dataset attributes
+    - title
+    - summary
+- dimension attributes
+    - standard name
+    - units
+
+indexing by position (e.g. get 2nd item) can cause issues if data structure changes
+- e.g. insert new item to list, position no longer correct
+- indexing using labels is more robust

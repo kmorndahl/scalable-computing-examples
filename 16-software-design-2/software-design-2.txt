@@ -1,0 +1,14 @@
+Advantage of python package is that you can be explicit about dependencies
+
+'__init__.py' is a marker that makes a directory into a package
+
+hatch, pdm -- alternative package managers (more advanced)
+
+uv -- alternative package manager
+
+tests:
+can run on command line using pytest
+OR
+can use test module in vscode
+beaker icon on far left
+click beaker that choose your workspace and test folder

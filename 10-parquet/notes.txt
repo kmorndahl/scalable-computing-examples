@@ -1,0 +1,15 @@
+How you arrange your data on disk can make a big difference for performance
+- If two parts of data are close to each other, fast
+- If you have to jump around a lot in big file block, much slower
+
+Row major vs. column major
+Access pattern determines which is more efficient
+e.g. are you reading columns all at once? or rows all at once?
+e.g. regression you want to pull 2 full columns - column major better
+
+Column major generally preferred
+- Statistical analysis often requires grabbing full columns
+- Within column, data type usually the same
+
+Parque uses column major
+

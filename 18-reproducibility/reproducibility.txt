@@ -1,0 +1,3 @@
+Find a colleague not involved in the study to read your methods and ID confusion points
+
+Graph out how to parallelize a whole computing workflow - pegasus

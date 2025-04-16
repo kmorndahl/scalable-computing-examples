@@ -1,0 +1,7 @@
+DataOne compiles search for several repositories
+https://www.dataone.org/
+
+archiving code:
+- software heritage
+    - actully tracks updates in git repository
+- zenodo

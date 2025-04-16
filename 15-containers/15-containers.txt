@@ -1,0 +1,38 @@
+Move code to your data, not data to your code
+
+Image is a thing that can be shared and saved
+Run the image to create a container
+A container is a process
+
+Everytime you distribute a virtual machine, you are distributing an entire operating system
+
+Without '-it' you can only get output you can't provide input
+
+Docker images are a huge vector for malware!!!
+Only use docker official images @ dockerhub
+
+Common way to start building a docker image is to start by using an existing image that has some of the functionality you want
+
+'build' creates an image
+'run' starts a process (container)
+
+within docker:
+ctrl D to exit python
+'exit' to exit Ubutu
+
+The 'Dockerfile' specifies all the necessary set up for the docker image
+Installs necessary packages
+Initializes the virtualenvwrapper stuff
+Sets up and starts the 'scomp' virtual environment
+Point of all this is to make it very reproducible, anyone who uses the docker container will be set up in the right space with the right packages, permissions etc.
+
+All the image layers that you create are read only -- immutable
+When you make changes in a containr, they go to a 'thin read/write layer' and don't actually save anything back to the image
+But, as soon as you delete the container, you loose anything you created on the 'thin read/write layer'
+So, don't save important output to the 'thin read/write layer'
+
+Instead, you need to 'mount' the data to your local machine
+Works like a flash drive
+A directory on your local laptop is 'mounted' to the docker image
+
+Dockerfile is a recipe that lays out how to create the docker image
